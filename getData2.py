@@ -38,7 +38,7 @@ def getSbahnData():
     for entry in data2:
         tmp_res = list()
         tdelta = 0
-        if ("Flughafen" in entry[2]):
+        if (entry[2].startswith("München Flughafen")):
             tmp_res.append(entry[1])
             tmp_res.append("Flughafen")
             if (len(entry) > 4):
@@ -49,7 +49,7 @@ def getSbahnData():
                          :-2]
             tmp_res.append(tdelta)
             res.append(tmp_res)
-        elif ("Freising" not in entry[2]):
+        elif (entry[2].startswith("München") and not entry[2].startswith("München Flughafen") and entry[1].startswith("S")):
             tmp_res.append(entry[1])
             tmp_res.append("Ostbahnhof")
             if (len(entry) > 4):
