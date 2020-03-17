@@ -12,24 +12,33 @@ class Visualizer:
 
         self.mainWidget = QWidget()
         self.mainWidget.setWindowTitle('BusPi v0.1')
+        self.mainWidget.setFixedHeight(300)
+        self.mainWidget.setFixedWidth(500)
 
-        buslayout = QVBoxLayout()
-        bus_label = QLabel('Bus Schedule')
-        buslayout.addWidget(bus_label)
-        self.bus_table_widget = self.createTable()
-        buslayout.addWidget(self.bus_table_widget)
+        #buslayout = QVBoxLayout()
+        #bus_label = QLabel('Bus Schedule')
+        #buslayout.addWidget(bus_label)
+        #self.bus_table_widget = self.createTable()
+        #buslayout.addWidget(self.bus_table_widget)
 
-        sbahnlayout = QVBoxLayout()
-        sbahn_label = QLabel('S-Bahn Schedule')
-        sbahnlayout.addWidget(sbahn_label)
-        self.sbahn_table_widget = self.createTable()
-        sbahnlayout.addWidget(self.sbahn_table_widget)
+        #sbahnlayout = QVBoxLayout()
+        #sbahn_label = QLabel('S-Bahn Schedule')
+        #sbahnlayout.addWidget(sbahn_label)
+        #self.sbahn_table_widget = self.createTable()
+        #sbahnlayout.addWidget(self.sbahn_table_widget)
+
+        bothlayout = QVBoxLayout()
+        bothlabel = QLabel('Bus and S-Bahn Schedule')
+        bothlayout.addWidget(bothlabel)
+        self.table_widget = self.createTable()
+        bothlayout.addWidget(self.table_widget)
 
         self.updateData()
 
         layout = QHBoxLayout()
-        layout.addLayout(buslayout)
-        layout.addLayout(sbahnlayout)
+        layout.addLayout(bothlayout)
+        #layout.addLayout(buslayout)
+        #layout.addLayout(sbahnlayout)
         self.mainWidget.setLayout(layout)
         self.mainWidget.show()
 
@@ -37,12 +46,12 @@ class Visualizer:
 
     def createTable(self):
         table_widget = QTableWidget()
-        table_widget.setRowCount(4)
+        table_widget.setRowCount(6)
         table_widget.setColumnCount(3)
-        table_widget.setHorizontalHeaderLabels(('Line', 'Dest.', 'Dep. in'))
+        table_widget.setHorizontalHeaderLabels(('Line', 'Dest.', 'Departure in'))
         table_widget.verticalHeader().setVisible(False)
-        table_widget.setFixedHeight(145)
-        table_widget.setFixedWidth(185)
+        table_widget.setFixedHeight(225)
+        table_widget.setFixedWidth(240)
         return table_widget
 
 
@@ -54,22 +63,28 @@ class Visualizer:
             table_widget.resizeColumnsToContents()
             table_widget.setAutoFillBackground(True)
             table_widget.setAlternatingRowColors(True)
+            table_widget.setFixedHeight(225)
+            table_widget.setFixedWidth(270)
+            table_widget.horizontalHeader().setStretchLastSection(True)
 
     def retrieveBusData(self):
         busdata = getBusData()
-        busdata = busdata[1:5]
+        busdata = busdata[1:4]
         return busdata
 
     def retrieveSbahnData(self):
         sbahndata = getSbahnData()
-        sbahndata = sbahndata[0:4]
+        sbahndata = sbahndata[0:3]
         return sbahndata
 
     def updateData(self):
         busdata = self.retrieveBusData()
-        self.fillTableWithData(busdata, self.bus_table_widget)
+        #self.fillTableWithData(busdata, self.bus_table_widget)
         sbahndata = self.retrieveSbahnData()
-        self.fillTableWithData(sbahndata, self.sbahn_table_widget)
+        alldata = busdata+sbahndata
+        self.fillTableWithData(alldata, self.table_widget)
+        self.table_widget.horizontalHeader().setStretchLastSection(True)
+        #self.fillTableWithData(sbahndata, self.sbahn_table_widget)
         QTimer.singleShot(10000, self.updateData)
 
 if __name__ == '__main__':
